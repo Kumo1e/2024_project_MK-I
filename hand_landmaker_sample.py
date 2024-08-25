@@ -66,3 +66,4 @@ if __name__ == "__main__":
     camera = 0
     landmarker = init_hand_landmaker(model_path)
     hand_landmaker(landmarker, camera)
+    
