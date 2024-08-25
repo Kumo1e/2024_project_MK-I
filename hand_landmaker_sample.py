@@ -6,7 +6,6 @@ import queue
 result_queue = queue.Queue(1)
 HandLandmarkerResult = mp.tasks.vision.HandLandmarkerResult
 
-
 def init_hand_landmaker(model_path):    
     BaseOptions = mp.tasks.BaseOptions
     HandLandmarker = mp.tasks.vision.HandLandmarker
@@ -18,7 +17,7 @@ def init_hand_landmaker(model_path):
 
     options = HandLandmarkerOptions(
         base_options=BaseOptions(model_asset_buffer=model_file),
-        running_mode=VisionRunningMode.LIVE_STREAM,
+        running_mode=VisionRunningMode.LIVE_STREAM, # 用於直播模式
         num_hands=2,
         result_callback=print_result
     )
