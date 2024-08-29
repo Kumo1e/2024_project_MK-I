@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 class AppGestureRecognizer:
+    
     def __init__(self, model_path, camera_id = 0):
         self.model_path = model_path
         self.camera_id = camera_id
