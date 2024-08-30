@@ -36,13 +36,13 @@ def track_green_ball(port, camera_id):
             ((x, y), radius) = cv2.minEnclosingCircle(c)
 
             if radius > 10:
-                cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
-                cv2.putText(frame, "Green Ball", (int(x-radius), int(y-radius)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+                # cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
+                # cv2.putText(frame, "Green Ball", (int(x-radius), int(y-radius)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
                 
                 angle_x = 15 + int(int(x) / 320 * 150)  # 調整解析度後的比例
                 angle_y = 15 + int(int(y) / 240 * 150)
-                output_x = -1 if angle_x > 115 else (0 if angle_x > 65 else 1)
-                output_y = 1 if angle_y > 115 else (0 if angle_y > 65 else -1)
+                output_x = -1 if angle_x > 160 else (0 if angle_x > 120 else 1)
+                output_y = 1 if angle_y > 160 else (0 if angle_y > 120 else -1)
 
                 # 檢查球的位置是否穩定
                 if abs(last_x - x) < 10 and abs(last_y - y) < 10:
@@ -65,10 +65,10 @@ def track_green_ball(port, camera_id):
             ser.write(move_command.encode())
 
         # time.sleep(0.02)  # 減少或去除延遲來提高速度
-        cv2.imshow('frame', frame)
-        print(move_command.encode())
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # cv2.imshow('frame', frame)
+        # print(move_command.encode())
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
     cap.release()
     cv2.destroyAllWindows()
