@@ -74,6 +74,6 @@ def track_green_ball(port, camera_id):
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    port = 'COM6'  # 替換為你的MATRIX板子的端口
-    camera_id = 1  # 啟動相機
+    port = '/dev/ttyUSB0'  # 替換為你的MATRIX板子的端口
+    camera_id = 0  # 啟動相機
     track_green_ball(port, camera_id)
