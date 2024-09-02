@@ -92,94 +92,67 @@ void mrright(){
   digitalWrite(In4, LOW);
 }
 
-
-void loop(){
-  if(g ==0){
-  mstop();
-  }
-  else{
-    if(g ==1){ //直走
-    mfront();
-  } 
-  else if(g==2){//倒車
-  mback();
-  }
-  else if(g==3){ //轉一圈
-  mspin();
-  delay(rotationTime);
-  }
-  else if(g ==4){
-    if (action == 0) {//隨機往左前右走並返回
+void loop() {
+  if (Serial.available() > 0){  // 是否接收到指令
+    String data = Serial.readStringUntil('\n');  // data 為鳩收到的指令
+    if(data == "Thumb_Up"){  // 前進
+      digitalWrite(LED_PIN, LOW);
       mfront();
-      delay(1000);
+    }
+    else if(data == "Thumb_Down"){ // 後退
+      digitalWrite(LED_PIN, LOW);
       mback();
-      delay(1000);
-    } else if (action == 1) {
-      mright();
-      delay(1000);
-      mrright();
-      delay(1000);
-    } else {
-      mleft();
-      delay(1000);
-      mrleft();
-      delay(1000);
+    }
+    else if(data == "Pointing_Up"){  // 轉圈
+      digitalWrite(LED_PIN, LOW);
+      mspin();
+      delay(rotationTime);
+    }
+    else if(data == "Closed_Fist"){  // 停止跟隨，關閉LED，攝像頭回到初始點
+      digitalWrite(LED_PIN, LOW);
+      servoX.write(95);
+      servoY.write(90); 
+    }
+    else{
+      digitalWrite(LED_PIN, HIGH);
+
+      // 分析收到的指令，假設格式為 "output_y output_x radius"
+      int output_y = data.substring(0, data.indexOf(' ')).toInt();
+      data = data.substring(data.indexOf(' ') + 1);
+      int output_x = data.substring(0, data.indexOf(' ')).toInt();
+      int radius = data.substring(data.indexOf(' ') + 1).toInt();
+
+      // 根據Python程式的輸入值控制伺服馬達的角度
+      int angleX = servoX.read();  // 讀取當前伺服馬達角度
+      int angleY = servoY.read();
+
+      // smoothMove(servoX, angleX, 2); // 每移動一步延遲10毫秒
+      // smoothMove(servoY, angleY, 2);
+      
+      
+      // 調整角度根據Python傳來的數據
+      angleX += output_x * 2;  // 每次移動5度
+      angleY += output_y * 2;
+
+      // 確保角度在10到170度之間
+      angleX = constrain(angleX, 10, 170);
+      angleY = constrain(angleY, 10, 170);
+
+      // 設定伺服馬達的新角度
+      servoX.write(angleX);
+      servoY.write(angleY);
+
+      // 根據半徑控制車子的前進或後退
+      if (radius > 50) {
+        mback();
+      } 
+      else if (radius < 30) {
+        mfront();
+      } 
+      else {
+        mstop();
+      }
     }
   }
-  else if(g==5){
-    if (Serial.available() > 0) {
-    digitalWrite(LED_PIN, HIGH);
-    String data = Serial.readStringUntil('\n');
-
-    // 分析收到的指令，假設格式為 "output_y output_x radius"
-    int output_y = data.substring(0, data.indexOf(' ')).toInt();
-    data = data.substring(data.indexOf(' ') + 1);
-    int output_x = data.substring(0, data.indexOf(' ')).toInt();
-    int radius = data.substring(data.indexOf(' ') + 1).toInt();
-
-    // 根據Python程式的輸入值控制伺服馬達的角度
-    int angleX = servoX.read();  // 讀取當前伺服馬達角度
-    int angleY = servoY.read();
-
-    // smoothMove(servoX, angleX, 2); // 每移動一步延遲10毫秒
-    // smoothMove(servoY, angleY, 2);
-    
-    
-    // 調整角度根據Python傳來的數據
-    angleX += output_x * 2;  // 每次移動5度
-    angleY += output_y * 2;
-
-    // 確保角度在10到170度之間
-    angleX = constrain(angleX, 10, 170);
-    angleY = constrain(angleY, 10, 170);
-
-    // 設定伺服馬達的新角度
-    servoX.write(angleX);
-    servoY.write(angleY);
-
-    // 根據半徑控制車子的前進或後退
-    if (radius > 50) {
-      mback();
-    } else if (radius < 30) {
-      mfront();
-    } else {
-      mstop();
-    }
-  }
-  else{
-    digitalWrite(LED_PIN, LOW);
-  }
-
-  }
-  }
+  mstop(); // 沒有接收到指令 停止
 }
-
-
-
-
-
-
-
-
-
-
