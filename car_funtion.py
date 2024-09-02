@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
-import numpy as np
+# import numpy as np
+import queue
 
 class Camera:
     def __init__(self, camera_id=0):
@@ -67,18 +68,19 @@ class AppGestureRecognizer:
         self.model_path = model_path
         
         self.timestamp = 0
-        self.result_gesture = ""
-        self.recognized_gesture = None
-        self.show_frame = np.zeros((640,480,3), np.uint8)
+        # self.result_gesture = ""
+        # self.recognized_gesture = None
+        self.result_queue = queue.Queue(1)
+        # self.show_frame = np.zeros((640,480,3), np.uint8)
         
         self.init_gesture_recognizer()
 
     def print_result(self,result, output_image, timestamp_ms):
-        top_gesture = "No gesture"
-        self.show_frame = output_image.numpy_view().copy()
+        top_gesture = ""
+        # self.show_frame = output_image.numpy_view().copy()
         if len(result.gestures) > 0:
             top_gesture = result.gestures[0][0].category_name
-        self.result_gesture = top_gesture
+        self.result_queue.put((top_gesture,))
 
     def init_gesture_recognizer(self):
         BaseOptions = mp.tasks.BaseOptions
@@ -101,9 +103,11 @@ class AppGestureRecognizer:
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         self.recognizer.recognize_async(mp_image, self.timestamp)
         self.timestamp = self.timestamp + 1
-        frame = self.show_frame
+        # frame = self.show_frame
         # print(self.result_gesture)
-        return self.result_gesture
+        text = self.result_queue.get()[0]
+        print(text)
+        return text
 
     
 

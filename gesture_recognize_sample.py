@@ -28,13 +28,14 @@ def init_gesture_recognizer(model_path):
 def print_result(result: GestureRecognizerResult, output_image: mp.Image, timestamp_ms: int): # type: ignore
 
     top_gesture = result.gestures
-    # hand_landmarks = result.hand_landmarks
-    frame = output_image.numpy_view().copy()
+    # frame = output_image.numpy_view().copy()
+    text = ""
     if top_gesture:
-        text = f"Category: {top_gesture[0][0].category_name}"
-        print('gesture recognize result: {}'.format(top_gesture[0][0].category_name))
-        put_cv2_text(frame, text, (20,20))
-    result_queue.put(frame)
+        text = f"{top_gesture[0][0].category_name}"
+        # print('gesture recognize result: {}'.format(top_gesture))
+        # put_cv2_text(frame, text, (20,20))
+    # result_queue.put(frame)
+    result_queue.put((text, ))
 
 
 def gesture_recognizer(recognizer, camera_id):
@@ -51,7 +52,9 @@ def gesture_recognizer(recognizer, camera_id):
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         recognizer.recognize_async(mp_image, timestamp)
 
-        frame = result_queue.get()
+        # frame = result_queue.get()
+        t = result_queue.get()
+        print(t[0])
 
         cv2.imshow('frame', frame)
         # print(f'{1 / (time.time() - timestamp):.2f}')
