@@ -14,7 +14,9 @@ class Camera:
         if not ret:
             return None
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        return hsv, frame
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        return hsv, rgb
     
     
     def release_camera(self):
@@ -22,14 +24,14 @@ class Camera:
 
 class TrackGreenBall:
     def __init__(self):
-        self.move_command = f"0 0 5\n"
+        self.move_command = f"0 0 35\n"
         self.stable_frames = 0  # 記錄穩定幀數
         self.stability_threshold = 4  # 設定穩定幀數的閾值 (降低以加快反應速度)
         self.last_x, self.last_y = 0, 0
 
     def track_green_ball(self, hsv):
-        lower_green = (35, 40, 40)
-        upper_green = (85, 255, 255)
+        lower_green = (25, 60, 160)
+        upper_green = (85, 255, 220)
 
         mask = cv2.inRange(hsv, lower_green, upper_green)
         contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -41,8 +43,8 @@ class TrackGreenBall:
             if radius > 10:
                 angle_x = 15 + int(int(x) / 320 * 150)  # 調整解析度後的比例
                 angle_y = 15 + int(int(y) / 240 * 150)
-                output_x = -1 if angle_x > 160 else (0 if angle_x > 120 else 1)
-                output_y = 1 if angle_y > 160 else (0 if angle_y > 120 else -1)
+                output_x = -1 if angle_x > 110 else (0 if angle_x > 70 else 1)
+                output_y = 1 if angle_y > 110 else (0 if angle_y > 70 else -1)
 
                 # 檢查球的位置是否穩定
                 if abs(self.last_x - x) < 10 and abs(self.last_y - y) < 10:
@@ -51,15 +53,15 @@ class TrackGreenBall:
                     self.stable_frames = 0
 
                 if self.stable_frames > self.stability_threshold:
-                    self.move_command = f"{output_y} {output_x} {int(radius)}\n"
+                    self.move_command =  f"{output_x} {output_y} {int(radius)}\n"
                 else:
-                    self.move_command = f"0 0 5\n"
+                    self.move_command = f"0 0 35\n"
 
                 self.last_x, self.last_y = x, y
             else:
-                self.move_command = f"0 0 5\n"
+                self.move_command = f"0 0 35\n"
         else:
-            self.move_command = f"0 0 5\n"
+            self.move_command = f"0 0 35\n"
         # print(self.move_command)
         return self.move_command
 
