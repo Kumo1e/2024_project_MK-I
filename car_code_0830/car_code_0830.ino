@@ -93,22 +93,25 @@ void mrright(){
 }
 
 void loop() {
-  if (Serial.available() > 0){  // 是否接收到指令
-    String data = Serial.readStringUntil('\n');  // data 為鳩收到的指令
-    if(data == "Thumb_Up"){  // 前進
+  if (Serial.available()){  // 是否接收到指令
+    String data = Serial.readStringUntil('\n');  // data 為收到的指令
+    digitalWrite(LED_PIN, HIGH);
+    if(data == "1"){  // 前進
       digitalWrite(LED_PIN, LOW);
       mfront();
+      delay(10);
     }
-    else if(data == "Thumb_Down"){ // 後退
+    else if(data == "2"){ // 後退
       digitalWrite(LED_PIN, LOW);
       mback();
+      delay(10);
     }
-    else if(data == "Pointing_Up"){  // 轉圈
+    else if(data == "3"){  // 轉圈
       digitalWrite(LED_PIN, LOW);
       mspin();
       delay(rotationTime);
     }
-    else if(data == "Closed_Fist"){  // 停止跟隨，關閉LED，攝像頭回到初始點
+    else if(data == "4"){  // 停止跟隨，關閉LED，攝像頭回到初始點
       digitalWrite(LED_PIN, LOW);
       servoX.write(95);
       servoY.write(90); 
@@ -145,9 +148,11 @@ void loop() {
       // 根據半徑控制車子的前進或後退
       if (radius > 50) {
         mback();
+        delay(10);
       } 
       else if (radius < 30) {
         mfront();
+        delay(10);
       } 
       else {
         mstop();
