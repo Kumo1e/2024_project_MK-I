@@ -26,7 +26,7 @@ class TrackGreenBall:
     def __init__(self):
         self.move_command = f"0 0 35\n"
         self.stable_frames = 0  # 記錄穩定幀數
-        self.stability_threshold = 4  # 設定穩定幀數的閾值 (降低以加快反應速度)
+        self.stability_threshold = 3  # 設定穩定幀數的閾值 (降低以加快反應速度)
         self.last_x, self.last_y = 0, 0
 
     def track_green_ball(self, hsv):
@@ -41,8 +41,8 @@ class TrackGreenBall:
             ((x, y), radius) = cv2.minEnclosingCircle(c)
 
             if radius > 10:
-                angle_x = 15 + int(int(x) / 320 * 150)  # 調整解析度後的比例
-                angle_y = 15 + int(int(y) / 240 * 150)
+                angle_x = 15 + int(int(x) / 640 * 150)  # 調整解析度後的比例
+                angle_y = 15 + int(int(y) / 480 * 150)
                 output_x = -1 if angle_x > 110 else (0 if angle_x > 70 else 1)
                 output_y = 1 if angle_y > 110 else (0 if angle_y > 70 else -1)
 
