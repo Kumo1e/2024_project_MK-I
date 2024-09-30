@@ -9,8 +9,6 @@ const int ENB = 6;
 const int LED_PIN = 13;
 const int rotationTime = 800; //轉圈時要走的時間,目前不知道要走多久先預設1秒
 int action = random(3);
-int g;
-int k;
 int speed =100;
 int follow_speed =70;
 int turn_speed = 25;
@@ -183,7 +181,7 @@ void loop() {
       
       
       // 調整角度根據Python傳來的數據
-      angleX += output_x * 2;  // 每次移動5度
+      angleX += output_x * 2;  // 每次移動2度
       angleY += output_y * 2;
 
       // 確保角度在10到170度之間
