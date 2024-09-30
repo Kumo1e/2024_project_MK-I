@@ -2,7 +2,6 @@ import mediapipe as mp
 import cv2
 import time
 import queue
-from image_collector import put_cv2_text
 
 result_queue = queue.Queue(1)
 GestureRecognizerResult = mp.tasks.vision.GestureRecognizerResult
