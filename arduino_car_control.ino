@@ -40,7 +40,7 @@ void setup(){
   pinMode(In4, OUTPUT);
   pinMode(ENA, OUTPUT);
   pinMode(ENB, OUTPUT);
-    // 初始化伺服馬達
+  // 初始化伺服馬達
   servoX.attach(9);   // 水平伺服馬達連接到D9引腳
   servoY.attach(10);
   servoX.write(85);
@@ -132,18 +132,18 @@ void loop() {
   if (Serial.available()){  // 是否接收到指令
     String data = Serial.readStringUntil('\n');  // data 為收到的指令
     digitalWrite(LED_PIN, HIGH);
-    if(data == "a"){  // 前進
+    if(data == "front"){  // 前進
       digitalWrite(LED_PIN, LOW);
       mfront();
       delay(10);
     }
-    else if(data == "b"){ // 後退
+    else if(data == "back"){ // 後退
       digitalWrite(LED_PIN, LOW);
       mback();
       delay(10);
       // mstop();
     }
-    else if(data == "c"){  // 轉圈
+    else if(data == "spin"){  // 轉圈
       digitalWrite(LED_PIN, LOW);
       mspin1();
       delay(800);
@@ -159,13 +159,13 @@ void loop() {
       delay(1250);
       mstop();
     }
-    else if(data == "w"){  // 停止跟隨，關閉LED，攝像頭回到初始點
+    else if(data == "wait"){  // 停止跟隨，關閉LED，攝像頭回到初始點
       digitalWrite(LED_PIN, LOW);
       servoX.write(85);
       servoY.write(90); 
       mstop();
     }
-    else if(data == "j"){  // 沒有接收到指令 停止
+    else if(data == "none"){  // 沒有接收到指令 停止
       mstop();
     }
     else{
