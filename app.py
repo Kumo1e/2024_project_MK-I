@@ -22,23 +22,24 @@ if __name__ == "__main__":
             hsv, frame = cap.capture_frame()
             gesture = recognize.gesture_recognizer(frame)
             if gesture == "Pointing_Up": # 轉圈
-                turn += 1
-                if turn%5 == 0:
-                    print("轉圈")
-                    command = f"c\n"
+                # 設定延遲，出現5次轉圈手勢才進行
+                turn += 1 
+                if turn%5 == 0: 
+                    # print("轉圈")
+                    command = f"spin\n"
                     ser.write(command.encode())
                     cv2.waitKey(1000)
             elif gesture == "Thumb_Down": # 後退
-                print("後退")
-                command = f"b\n"
+                # print("後退")
+                command = f"back\n"
                 ser.write(command.encode())
             elif gesture == "Thumb_Up": # 前進
-                print("前進")
-                command = f"a\n"
+                # print("前進")
+                command = f"front\n"
                 ser.write(command.encode())
             elif gesture == "Open_Palm": # 前進
-                print("停")
-                command = f"w\n"
+                # print("停")
+                command = f"wait\n"
                 ser.write(command.encode())
             elif gesture == "ILoveYou": # 跟隨
                 is_follow = True
@@ -51,14 +52,14 @@ if __name__ == "__main__":
                     cv2.waitKey(10)
                     command = ""
                     ser.write(command.encode())
-                    print(move)
+                    # print(move)
                     if gesture == "Open_Palm":
                         is_follow = False
-                        command = f"w\n"
+                        command = f"wait\n"
                         ser.write(command.encode())
             else:
-                print(gesture)
-                command = f"j\n"
+                # print(gesture)
+                command = f"none\n"
                 ser.write(command.encode())
             cv2.waitKey(200)
             if cv2.waitKey(1) & 0xFF == ord('q'):
