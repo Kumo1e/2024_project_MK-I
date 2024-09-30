@@ -1,10 +1,10 @@
 import cv2
 import mediapipe as mp
-# import numpy as np
 import queue
 
 class Camera:
     def __init__(self, camera_id=0):
+        # 初始化攝像頭設定
         self.cap = cv2.VideoCapture(camera_id)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
@@ -13,6 +13,7 @@ class Camera:
         ret, frame = self.cap.read()
         if not ret:
             return None
+        # 轉換顏色遮罩
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -20,6 +21,7 @@ class Camera:
     
     
     def release_camera(self):
+        # 釋放攝像頭
         self.cap.release()
 
 class TrackGreenBall:
@@ -30,6 +32,7 @@ class TrackGreenBall:
         self.last_x, self.last_y = 0, 0
 
     def track_green_ball(self, hsv):
+        # 設定顏色區間
         lower_green = (25, 60, 160)
         upper_green = (85, 255, 220)
 
@@ -62,7 +65,6 @@ class TrackGreenBall:
                 self.move_command = f"0 0 35\n"
         else:
             self.move_command = f"0 0 35\n"
-        # print(self.move_command)
         return self.move_command
 
 class AppGestureRecognizer:
@@ -70,16 +72,13 @@ class AppGestureRecognizer:
         self.model_path = model_path
         
         self.timestamp = 0
-        # self.result_gesture = ""
-        # self.recognized_gesture = None
         self.result_queue = queue.Queue(1)
-        # self.show_frame = np.zeros((640,480,3), np.uint8)
+
         
         self.init_gesture_recognizer()
 
     def print_result(self,result, output_image, timestamp_ms):
         top_gesture = ""
-        # self.show_frame = output_image.numpy_view().copy()
         if len(result.gestures) > 0:
             top_gesture = result.gestures[0][0].category_name
         self.result_queue.put((top_gesture,))
@@ -105,8 +104,6 @@ class AppGestureRecognizer:
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
         self.recognizer.recognize_async(mp_image, self.timestamp)
         self.timestamp = self.timestamp + 1
-        # frame = self.show_frame
-        # print(self.result_gesture)
         text = self.result_queue.get()[0]
         print(text)
         return text
