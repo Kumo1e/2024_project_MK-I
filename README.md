@@ -11,3 +11,4 @@
 3. 下載手勢辨識模型 [MediaPipe網站](https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer?hl=zh-tw)
 
 ## 實作
+![image](https://github.com/Kumo1e/hfu_project/blob/main/img/MK-I%E8%A8%AD%E8%A8%88%E5%9C%96.png?raw=true)
